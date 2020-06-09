@@ -41,7 +41,7 @@ void main() async {
     });
   });
 
-  group('All files', () async {
+  group('All files', () {
     var baseDir;
 
     setUpAll(() async {
