@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:dart2_constant/convert.dart' as convert;
+import 'package:image/image.dart';
 import 'package:quiver/core.dart';
 
 import '../entities/epub_content_type.dart';
@@ -54,6 +56,25 @@ abstract class EpubContentFileRef {
           'Incorrect EPUB file: content file \"${FileName}\" specified in manifest is not found.');
     }
     contentStream.addAll(contentFileEntry.content);
+
+    if (contentFileEntry.name.contains(RegExp('\.(jpg|jpeg|bmp|png)\$'))) {
+      var image = contentFileEntry.name.endsWith('.bmp')
+          ? decodeBmp(contentStream)
+          : decodeImage(contentStream);
+
+      if (image.width > 800) {
+        image = copyResize(image, width: 800);
+      }
+
+      var encodedImage = encodeJpg(image, quality: 75);
+
+      if (encodedImage.length < contentStream.length) {
+        return encodedImage;
+      }
+
+      return contentStream;
+    }
+
     return contentStream;
   }
 
