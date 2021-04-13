@@ -90,13 +90,18 @@ class EpubReader {
         Map<String, EpubTextContentFile>();
 
     await Future.forEach(textContentFileRefs.keys, (key) async {
-      EpubContentFileRef value = textContentFileRefs[key];
-      EpubTextContentFile textContentFile = EpubTextContentFile();
-      textContentFile.FileName = value.FileName;
-      textContentFile.ContentType = value.ContentType;
-      textContentFile.ContentMimeType = value.ContentMimeType;
-      textContentFile.Content = await value.readContentAsText();
-      result[key] = textContentFile;
+      try {
+        EpubContentFileRef value = textContentFileRefs[key];
+        EpubTextContentFile textContentFile = EpubTextContentFile();
+        textContentFile.FileName = value.FileName;
+        textContentFile.ContentType = value.ContentType;
+        textContentFile.ContentMimeType = value.ContentMimeType;
+        textContentFile.Content = await value.readContentAsText();
+        result[key] = textContentFile;
+      } catch (error) {
+        // nothing for now
+        print(error);
+      }
     });
     return result;
   }

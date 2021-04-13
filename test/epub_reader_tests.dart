@@ -41,6 +41,32 @@ void main() async {
     });
   });
 
+  group('21 lessen', () {
+    var targetFile;
+    var bytes;
+
+    setUpAll(() {
+      var fileName = "21lessenVoorDe21steEeuw.epub";
+      var fullPath =
+      path.join(io.Directory.current.path, "test", "res", fileName);
+
+      targetFile = new io.File(fullPath);
+
+      if (!(targetFile.existsSync())) {
+        throw new Exception("Specified epub file not found: ${fullPath}");
+      }
+
+      bytes = targetFile.readAsBytesSync();
+    });
+
+    test("Test Epub Read", () async {
+      var epubRef = await EpubReader.readBook(bytes);
+
+      expect(epubRef.Author, equals("John S. Hittell"));
+      expect(epubRef.Title, equals("Hittel on Gold Mines and Mining"));
+    });
+  });
+
   group('All files', () {
     var baseDir;
 
